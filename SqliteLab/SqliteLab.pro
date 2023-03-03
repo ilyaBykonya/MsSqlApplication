@@ -2,9 +2,11 @@ QT += core widgets gui sql
 CONFIG += c++17
 
 
-HEADERS +=
+HEADERS += \
+    Utils/ConnectionDialog/ConnectionDialog.h
 
 SOURCES += \
+    Utils/ConnectionDialog/ConnectionDialog.cpp \
     main.cpp
 
 # The following define makes your compiler emit warnings if you use
