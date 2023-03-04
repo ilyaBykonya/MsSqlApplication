@@ -3,10 +3,18 @@ CONFIG += c++17
 
 
 HEADERS += \
-    Utils/ConnectionDialog/ConnectionDialog.h
+    Utils/ConnectionDialog/ConnectionDialog.h \
+    View/Application/ProductsView/InputProductDialog/InputProductDialog.h \
+    View/Application/ProductsView/ProductsView.h \
+    View/Application/Application.h \
+    View/Application/ReadOnlyTableView/ReadOnlyTableView.h
 
 SOURCES += \
     Utils/ConnectionDialog/ConnectionDialog.cpp \
+    View/Application/ProductsView/InputProductDialog/InputProductDialog.cpp \
+    View/Application/ProductsView/ProductsView.cpp \
+    View/Application/Application.cpp \
+    View/Application/ReadOnlyTableView/ReadOnlyTableView.cpp \
     main.cpp
 
 # The following define makes your compiler emit warnings if you use

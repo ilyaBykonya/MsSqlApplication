@@ -20,6 +20,11 @@ ConnectionDialog::ConnectionDialog(QWidget* parent)
         m_user_input->setPlaceholderText("User");
         m_password_input->setPlaceholderText("Password");
 
+
+        m_address_input->setText("DESKTOP-24O70ES\\LOCAL_SQL_SERVER");
+        m_database_input->setText("Bykonya");
+
+
         auto controls_layout = new QHBoxLayout;
             controls_layout->addWidget(reject_button);
             controls_layout->addWidget(accept_button);
