@@ -1,4 +1,5 @@
 #pragma once
+#include "Utils/CategoriesListRepository/CategoriesListRepository.h"
 #include "../EditProductWidget/EditProductWidget.h"
 #include "../ProductDto/ProductRecord.h"
 #include <QSqlQueryModel>
@@ -17,7 +18,7 @@ private:
     QPointer<QPushButton> m_delete_button;
     QPointer<QPushButton> m_refresh_button;
 public:
-    CurrentItemView(QWidget* parent = nullptr);
+    CurrentItemView(QPointer<CategoriesListRepository> categories, QWidget* parent = nullptr);
 public slots:
     void setCurrentRecord(std::uint64_t line, const ProductRecord& record);
 private slots:

@@ -8,8 +8,8 @@ class InputProductDialog : public QDialog {
 private:
     QPointer<EditProductWidget> m_input;
 public:
-    InputProductDialog(const std::optional<ProductInfo>& origin = {}, QWidget* parent = nullptr);
-    std::optional<ProductInfo> product() const;
+    InputProductDialog(QPointer<CategoriesListRepository> categories, const std::optional<ProductInfo>& origin = {}, QWidget* parent = nullptr);
+    std::optional<ProductInfo> info() const;
 };
 
 

@@ -3,8 +3,8 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
-InputProductDialog::InputProductDialog(const std::optional<ProductInfo>& origin, QWidget* parent)
-    :QDialog{ parent }, m_input{ new EditProductWidget{} } {
+InputProductDialog::InputProductDialog(QPointer<CategoriesListRepository> categories, const std::optional<ProductInfo>& origin, QWidget* parent)
+    :QDialog{ parent }, m_input{ new EditProductWidget{ categories } } {
         m_input->setRecord(origin);
         auto accept_button = new QPushButton{ "Ok" };
         auto reject_button = new QPushButton{ "Cancel" };
@@ -21,7 +21,7 @@ InputProductDialog::InputProductDialog(const std::optional<ProductInfo>& origin,
             dialog_layout->addLayout(controls_layout);
     }
 
-std::optional<ProductInfo> InputProductDialog::product() const {
+std::optional<ProductInfo> InputProductDialog::info() const {
     return m_input->record();
 }
 

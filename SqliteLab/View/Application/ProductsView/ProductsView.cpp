@@ -17,10 +17,11 @@
 #include <QMenu>
 #include <QDebug>
 
-ProductsView::ProductsView(const QSqlDatabase& connection, QWidget *parent)
+ProductsView::ProductsView(QPointer<CategoriesListRepository> categories, const QSqlDatabase& connection, QWidget *parent)
     :QWidget{ parent },
+     m_categories{ categories },
      m_table_model{ },
-     m_current_item_view{ new CurrentItemView },
+     m_current_item_view{ new CurrentItemView{ categories } },
      m_table_view{ new QTableView } {
         auto add_product_button = new QPushButton{ "Add" };
         auto make_pdf_button = new QPushButton{ "Make pdf" };
@@ -69,8 +70,8 @@ std::optional<ProductRecord> ProductsView::recordAt(const QModelIndex &index) {
     return ProductRecord {
         record.value(s_field_id).toULongLong(),
         ProductInfo {
+            record.value(s_field_category).toULongLong(),
             record.value(s_field_name).toString(),
-            record.value(s_field_category).toString(),
             record.value(s_field_some_date).toDate(),
             record.value(s_field_image_path).toString()
         }
@@ -78,21 +79,21 @@ std::optional<ProductRecord> ProductsView::recordAt(const QModelIndex &index) {
 }
 
 void ProductsView::addProduct() {
-    InputProductDialog input_product;
+    InputProductDialog input_product{ m_categories, ProductInfo{ m_categories->id_for_name(m_categories->all_categories().first()), {}, QDate::currentDate(), {} }, this };
     if(input_product.exec() != QDialog::DialogCode::Accepted)
         return;
 
-    auto product = input_product.product();
+    auto product = input_product.info();
     if(not product.has_value())
         return;
 
     QSqlRecord record{};
         QSqlField field_name{ s_field_name, QVariant::Type::String };
-        QSqlField field_category{ s_field_category, QVariant::Type::String };
+        QSqlField field_category{ s_field_category, QVariant::Type::ULongLong };
         QSqlField field_some_date{ s_field_some_date, QVariant::Type::Date };
         QSqlField field_image_path{ s_field_image_path, QVariant::Type::String };
         field_name.setValue(product->name());
-        field_category.setValue(product->category());
+        field_category.setValue(product->category_id());
         field_some_date.setValue(product->date());
         field_image_path.setValue(product->image_path());
         field_name.setGenerated(true);
@@ -129,10 +130,13 @@ void ProductsView::showContextMenuForTableView(const QPoint &position) {
     auto remove_action = table_menu->addAction("Remove");
     connect(table_menu, &QMenu::aboutToHide, table_menu, &QObject::deleteLater);
     connect(update_action, &QAction::triggered, [this, index = index] {
-        InputProductDialog input_product;
+        auto product = recordAt(index);
+        if(not product.has_value())
+            return;
+
+        InputProductDialog input_product{ m_categories, product.value().info(), this };
         if(input_product.exec() == QDialog::DialogCode::Accepted)
-            if(auto product = recordAt(index); product.has_value())
-                this->updateProduct(index.row(), product.value());
+            this->updateProduct(index.row(), { product->id(), input_product.info().value() });
     });
     connect(remove_action, &QAction::triggered, [this, row = index.row()] {
         this->deleteProduct(row);
@@ -142,7 +146,7 @@ void ProductsView::showContextMenuForTableView(const QPoint &position) {
 
 void ProductsView::updateProduct(uint64_t line, const ProductRecord& record) {
     m_table_model->setData(m_table_model->index(line, m_table_model->fieldIndex(s_field_name)), record.info().name());
-    m_table_model->setData(m_table_model->index(line, m_table_model->fieldIndex(s_field_category)), record.info().category());
+    m_table_model->setData(m_table_model->index(line, m_table_model->fieldIndex(s_field_category)), record.info().category_id());
     m_table_model->setData(m_table_model->index(line, m_table_model->fieldIndex(s_field_some_date)), record.info().date());
     m_table_model->setData(m_table_model->index(line, m_table_model->fieldIndex(s_field_image_path)), record.info().image_path());
     m_table_model->submitAll();

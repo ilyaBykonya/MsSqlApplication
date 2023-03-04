@@ -2,10 +2,10 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-CurrentItemView::CurrentItemView(QWidget* parent)
+CurrentItemView::CurrentItemView(QPointer<CategoriesListRepository> categories, QWidget* parent)
     :QWidget{ parent }, m_record{},
      m_current_id_view{ new QLineEdit },
-     m_current_product{ new EditProductWidget },
+     m_current_product{ new EditProductWidget{ categories } },
      m_update_button{ new QPushButton{ "Update" } },
      m_delete_button{ new QPushButton{ "Delete" } },
      m_refresh_button{ new QPushButton{ "Refresh" } } {

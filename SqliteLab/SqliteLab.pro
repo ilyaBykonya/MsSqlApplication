@@ -3,6 +3,7 @@ CONFIG += c++17
 
 
 HEADERS += \
+    Utils/CategoriesListRepository/CategoriesListRepository.h \
     Utils/ConnectionDialog/ConnectionDialog.h \
     Utils/ImageSelectionDialog/ImageSelectionDialog.h \
     Utils/TablePrinter/TablePrinter.h \
@@ -16,6 +17,7 @@ HEADERS += \
     View/Application/ReadOnlyTableView/ReadOnlyTableView.h
 
 SOURCES += \
+    Utils/CategoriesListRepository/CategoriesListRepository.cpp \
     Utils/ConnectionDialog/ConnectionDialog.cpp \
     Utils/ImageSelectionDialog/ImageSelectionDialog.cpp \
     Utils/TablePrinter/TablePrinter.cpp \

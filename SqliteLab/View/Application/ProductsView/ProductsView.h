@@ -1,4 +1,5 @@
 #pragma once
+#include "Utils/CategoriesListRepository/CategoriesListRepository.h"
 #include "InputProductDialog/InputProductDialog.h"
 #include "CurrentItemView/CurrentItemView.h"
 #include <QSqlTableModel>
@@ -14,16 +15,17 @@ private:
     static constexpr auto s_table_name = "product";
     static constexpr auto s_field_id = "ID";
     static constexpr auto s_field_name = "Name";
-    static constexpr auto s_field_category = "Category";
+    static constexpr auto s_field_category = "catID";
     static constexpr auto s_field_image_path = "ImagePath";
     static constexpr auto s_field_some_date = "SomeDate";
 private:
     QSqlDatabase m_connection;
+    QPointer<CategoriesListRepository> m_categories;
     QPointer<QSqlTableModel> m_table_model;
     QPointer<CurrentItemView> m_current_item_view;
     QPointer<QTableView> m_table_view;
 public:
-    explicit ProductsView(const QSqlDatabase& connection, QWidget *parent = nullptr);
+    explicit ProductsView(QPointer<CategoriesListRepository> categories, const QSqlDatabase& connection, QWidget *parent = nullptr);
 public slots:
     void setConnection(const QSqlDatabase& connection);
     void clearConnection();

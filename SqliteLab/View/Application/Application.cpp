@@ -9,7 +9,7 @@
 #include <QDebug>
 
 Application::Application(QWidget *parent)
-    :QWidget{ parent }, m_connection{}, m_products{ new ProductsView{ {} } } {
+    :QWidget{ parent }, m_connection{}, m_categories{ new CategoriesListRepository{} }, m_products{ new ProductsView{ m_categories, {} } } {
         auto table_view_button = new QPushButton{ "View table" };
         auto connect_button = new QPushButton{ "Connect" };
         auto quit_button = new QPushButton{ "Quit" };
@@ -39,6 +39,7 @@ void Application::connectToDatabase() {
     m_connection.setUserName(connection_info_input.user());
     m_connection.setPassword(connection_info_input.password());
     qDebug() << "Open connection result => " << m_connection.open();
+    m_categories->setConnection(m_connection);
     m_products->setConnection(m_connection);
 }
 

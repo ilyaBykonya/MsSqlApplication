@@ -1,12 +1,12 @@
 #include "ProductInfo.h"
 
-ProductInfo::ProductInfo(const QString& name, const QString& category, const QDate& date, const QString& image_path)
-    :m_image_path{ image_path }, m_category{ category }, m_name{ name }, m_date{ date } {}
+ProductInfo::ProductInfo(std::uint64_t category_id, const QString& name, const QDate& date, const QString& image_path)
+    :m_category_id{ category_id },m_image_path{ image_path }, m_name{ name }, m_date{ date } {}
 const QString &ProductInfo::image_path() const {
     return m_image_path;
 }
-const QString &ProductInfo::category() const {
-    return m_category;
+uint64_t ProductInfo::category_id() const {
+    return m_category_id;
 }
 const QString &ProductInfo::name() const {
     return m_name;
