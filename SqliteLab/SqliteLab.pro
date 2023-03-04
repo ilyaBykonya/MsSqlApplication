@@ -1,4 +1,4 @@
-QT += core widgets gui sql printsupport
+QT += core widgets gui sql printsupport charts
 CONFIG += c++17
 
 
@@ -14,7 +14,8 @@ HEADERS += \
     View/Application/ProductsView/ProductDto/ProductRecord.h \
     View/Application/ProductsView/ProductsView.h \
     View/Application/Application.h \
-    View/Application/ReadOnlyTableView/ReadOnlyTableView.h
+    View/Application/ReadOnlyTableView/ReadOnlyTableView.h \
+    View/Application/ScoresChartView/ScoresChartView.h
 
 SOURCES += \
     Utils/CategoriesListRepository/CategoriesListRepository.cpp \
@@ -29,6 +30,7 @@ SOURCES += \
     View/Application/ProductsView/ProductsView.cpp \
     View/Application/Application.cpp \
     View/Application/ReadOnlyTableView/ReadOnlyTableView.cpp \
+    View/Application/ScoresChartView/ScoresChartView.cpp \
     main.cpp
 
 # The following define makes your compiler emit warnings if you use

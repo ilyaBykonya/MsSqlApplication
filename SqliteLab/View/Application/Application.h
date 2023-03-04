@@ -18,6 +18,7 @@ public:
     explicit Application(QWidget *parent = nullptr);
 private slots:
     void connectToDatabase();
+    void showScoresView();
     void showTableView();
 };
 

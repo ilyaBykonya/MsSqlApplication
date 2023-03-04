@@ -117,7 +117,6 @@ void ProductsView::setCurrentProduct(const QModelIndex &index) {
     m_table_model->select();
 }
 void ProductsView::showContextMenuForTableView(const QPoint &position) {
-    qDebug() << "Request context menu for => " << position;
     if(m_table_model == nullptr)
         return;
 
