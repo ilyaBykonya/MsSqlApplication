@@ -1,16 +1,15 @@
 #pragma once
-#include <QLineEdit>
+#include "../EditProductWidget/EditProductWidget.h"
+#include <QPointer>
 #include <QDialog>
 
 class InputProductDialog : public QDialog {
     Q_OBJECT
 private:
-    QLineEdit* m_name_input;
-    QLineEdit* m_category_input;
+    QPointer<EditProductWidget> m_input;
 public:
-    InputProductDialog(QWidget* parent = nullptr);
-    QString category() const;
-    QString name() const;
+    InputProductDialog(const std::optional<ProductInfo>& origin = {}, QWidget* parent = nullptr);
+    std::optional<ProductInfo> product() const;
 };
 
 

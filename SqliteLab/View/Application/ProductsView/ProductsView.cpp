@@ -61,18 +61,44 @@ void ProductsView::clearConnection() {
         m_table_model->deleteLater();
 }
 
+std::optional<ProductRecord> ProductsView::recordAt(const QModelIndex &index) {
+    if(not index.isValid())
+        return {};
+
+    auto record = m_table_model->record(index.row());
+    return ProductRecord {
+        record.value(s_field_id).toULongLong(),
+        ProductInfo {
+            record.value(s_field_name).toString(),
+            record.value(s_field_category).toString(),
+            record.value(s_field_some_date).toDate(),
+            record.value(s_field_image_path).toString()
+        }
+    };
+}
+
 void ProductsView::addProduct() {
     InputProductDialog input_product;
     if(input_product.exec() != QDialog::DialogCode::Accepted)
         return;
 
+    auto product = input_product.product();
+    if(not product.has_value())
+        return;
+
     QSqlRecord record{};
         QSqlField field_name{ s_field_name, QVariant::Type::String };
         QSqlField field_category{ s_field_category, QVariant::Type::String };
-        field_name.setValue(input_product.name());
-        field_category.setValue(input_product.category());
+        QSqlField field_some_date{ s_field_some_date, QVariant::Type::Date };
+        QSqlField field_image_path{ s_field_image_path, QVariant::Type::String };
+        field_name.setValue(product->name());
+        field_category.setValue(product->category());
+        field_some_date.setValue(product->date());
+        field_image_path.setValue(product->image_path());
         field_name.setGenerated(true);
         field_category.setGenerated(true);
+        field_some_date.setGenerated(true);
+        field_image_path.setGenerated(true);
     record.append(field_name);
     record.append(field_category);
 
@@ -81,9 +107,11 @@ void ProductsView::addProduct() {
     m_table_model->select();
 }
 void ProductsView::setCurrentProduct(const QModelIndex &index) {
-    auto record = m_table_model->record(index.row());
-    m_current_item_view->setCurrentRecord(index.row(), record.value(s_field_id).toULongLong(), record.value(s_field_name).toString(), record.value(s_field_category).toString());
+    auto record = recordAt(index);
+    if(not record.has_value())
+        return;
 
+    m_current_item_view->setCurrentRecord(index.row(), record.value());
     m_table_model->submitAll();
     m_table_model->select();
 }
@@ -100,29 +128,31 @@ void ProductsView::showContextMenuForTableView(const QPoint &position) {
     auto update_action = table_menu->addAction("Update");
     auto remove_action = table_menu->addAction("Remove");
     connect(table_menu, &QMenu::aboutToHide, table_menu, &QObject::deleteLater);
-    connect(update_action, &QAction::triggered, [this, row = index.row()] {
+    connect(update_action, &QAction::triggered, [this, index = index] {
         InputProductDialog input_product;
         if(input_product.exec() == QDialog::DialogCode::Accepted)
-            this->updateProduct(row, {}, input_product.name(), input_product.category());
+            if(auto product = recordAt(index); product.has_value())
+                this->updateProduct(index.row(), product.value());
     });
     connect(remove_action, &QAction::triggered, [this, row = index.row()] {
-        this->deleteProduct(row, {});
+        this->deleteProduct(row);
     });
     table_menu->popup(m_table_view->viewport()->mapToGlobal(position));
 }
 
-void ProductsView::updateProduct(uint64_t line, uint64_t/* id*/, const QString &name, const QString &category) {
-    m_table_model->setData(m_table_model->index(line, m_table_model->fieldIndex(s_field_name)), name);
-    m_table_model->setData(m_table_model->index(line, m_table_model->fieldIndex(s_field_category)), category);
+void ProductsView::updateProduct(uint64_t line, const ProductRecord& record) {
+    m_table_model->setData(m_table_model->index(line, m_table_model->fieldIndex(s_field_name)), record.info().name());
+    m_table_model->setData(m_table_model->index(line, m_table_model->fieldIndex(s_field_category)), record.info().category());
+    m_table_model->setData(m_table_model->index(line, m_table_model->fieldIndex(s_field_some_date)), record.info().date());
+    m_table_model->setData(m_table_model->index(line, m_table_model->fieldIndex(s_field_image_path)), record.info().image_path());
     m_table_model->submitAll();
     m_table_model->select();
 }
-void ProductsView::deleteProduct(uint64_t line, uint64_t/* id*/) {
+void ProductsView::deleteProduct(uint64_t line) {
     m_table_model->removeRow(line);
     m_table_model->submitAll();
     m_table_model->select();
 }
-
 void ProductsView::saveReport() {
     auto save_path = QFileDialog::getSaveFileName(this);
     if(save_path.isEmpty())
@@ -139,7 +169,7 @@ void ProductsView::saveReport() {
     for(auto index = 0; index < m_table_model->columnCount(); ++index)
         header_names << m_table_model->headerData(index, Qt::Orientation::Horizontal).toString();
 
-    TablePrinter{ &painter, &printer }.printTable(m_table_model, { 1, 3, 3 }, header_names);
+    TablePrinter{ &painter, &printer }.printTable(m_table_model, { 1, 3, 3, 3, 3 }, header_names);
     painter.end();
 }
 

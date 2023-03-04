@@ -3,7 +3,6 @@
 #include <QDialog>
 
 class ConnectionDialog : public QDialog {
-    Q_OBJECT
 private:
     QLineEdit* m_address_input;
     QLineEdit* m_database_input;

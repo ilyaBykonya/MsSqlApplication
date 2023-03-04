@@ -4,18 +4,26 @@ CONFIG += c++17
 
 HEADERS += \
     Utils/ConnectionDialog/ConnectionDialog.h \
+    Utils/ImageSelectionDialog/ImageSelectionDialog.h \
     Utils/TablePrinter/TablePrinter.h \
     View/Application/ProductsView/CurrentItemView/CurrentItemView.h \
+    View/Application/ProductsView/EditProductWidget/EditProductWidget.h \
     View/Application/ProductsView/InputProductDialog/InputProductDialog.h \
+    View/Application/ProductsView/ProductDto/ProductInfo.h \
+    View/Application/ProductsView/ProductDto/ProductRecord.h \
     View/Application/ProductsView/ProductsView.h \
     View/Application/Application.h \
     View/Application/ReadOnlyTableView/ReadOnlyTableView.h
 
 SOURCES += \
     Utils/ConnectionDialog/ConnectionDialog.cpp \
+    Utils/ImageSelectionDialog/ImageSelectionDialog.cpp \
     Utils/TablePrinter/TablePrinter.cpp \
     View/Application/ProductsView/CurrentItemView/CurrentItemView.cpp \
+    View/Application/ProductsView/EditProductWidget/EditProductWidget.cpp \
     View/Application/ProductsView/InputProductDialog/InputProductDialog.cpp \
+    View/Application/ProductsView/ProductDto/ProductInfo.cpp \
+    View/Application/ProductsView/ProductDto/ProductRecord.cpp \
     View/Application/ProductsView/ProductsView.cpp \
     View/Application/Application.cpp \
     View/Application/ReadOnlyTableView/ReadOnlyTableView.cpp \
