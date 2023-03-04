@@ -28,8 +28,10 @@ public slots:
 private slots:
     void addProduct();
     void setCurrentProduct(const QModelIndex& index);
+    void showContextMenuForTableView(const QPoint& position);
 private slots:
     void updateProduct(std::uint64_t line, std::uint64_t id, const QString& name, const QString& category);
     void deleteProduct(std::uint64_t line, std::uint64_t id);
+    void saveReport();
 };
 
