@@ -4,6 +4,7 @@
 #include "Utils/ConnectionDialog/ConnectionDialog.h"
 #include "View/Application/Application.h"
 
+
 //DESKTOP-24O70ES\LOCAL_SQL_SERVER
 //Bykonya
 int main(int argc, char *argv[]) {

@@ -16,6 +16,7 @@
 #include <QAction>
 #include <QMenu>
 #include <QDebug>
+#include <QSqlDriver>
 
 ProductsView::ProductsView(QPointer<CategoriesListRepository> categories, const QSqlDatabase& connection, QWidget *parent)
     :QWidget{ parent },
@@ -72,14 +73,14 @@ std::optional<ProductRecord> ProductsView::recordAt(const QModelIndex &index) {
         ProductInfo {
             record.value(s_field_category).toULongLong(),
             record.value(s_field_name).toString(),
-            record.value(s_field_some_date).toDate(),
+            record.value(s_field_some_date).toDateTime(),
             record.value(s_field_image_path).toString()
         }
     };
 }
 
 void ProductsView::addProduct() {
-    InputProductDialog input_product{ m_categories, ProductInfo{ m_categories->id_for_name(m_categories->all_categories().first()), {}, QDate::currentDate(), {} }, this };
+    InputProductDialog input_product{ m_categories, ProductInfo{ m_categories->id_for_name(m_categories->all_categories().first()), {}, QDateTime::currentDateTime(), {} }, this };
     if(input_product.exec() != QDialog::DialogCode::Accepted)
         return;
 
@@ -90,7 +91,7 @@ void ProductsView::addProduct() {
     QSqlRecord record{};
         QSqlField field_name{ s_field_name, QVariant::Type::String };
         QSqlField field_category{ s_field_category, QVariant::Type::ULongLong };
-        QSqlField field_some_date{ s_field_some_date, QVariant::Type::Date };
+        QSqlField field_some_date{ s_field_some_date, QVariant::Type::DateTime };
         QSqlField field_image_path{ s_field_image_path, QVariant::Type::String };
         field_name.setValue(product->name());
         field_category.setValue(product->category_id());
@@ -102,6 +103,8 @@ void ProductsView::addProduct() {
         field_image_path.setGenerated(true);
     record.append(field_name);
     record.append(field_category);
+    record.append(field_some_date);
+    record.append(field_image_path);
 
     m_table_model->insertRecord(-1, record);
     m_table_model->submitAll();

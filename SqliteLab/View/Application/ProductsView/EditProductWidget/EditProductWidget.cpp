@@ -37,7 +37,7 @@ std::optional<ProductInfo> EditProductWidget::record() const {
 
     return ProductInfo {
         m_categories->id_for_name(m_category_input->currentText()), m_name_input->text(),
-        m_date_input->date(), m_image_view->text()
+        QDateTime{ m_date_input->date() }, m_image_view->text()
     };
 }
 void EditProductWidget::selectImage() {
@@ -51,7 +51,7 @@ void EditProductWidget::setRecord(const std::optional<ProductInfo>& record) {
 
     m_name_input->setText(has_value ? record.value().name() : "");
     m_category_input->setCurrentText(has_value ? m_categories->name_for_id(record.value().category_id()) : "");
-    m_date_input->setDate(has_value ? record.value().date() : QDate::currentDate());
+    m_date_input->setDate(has_value ? record.value().date().date() : QDate::currentDate());
     m_image_view->setText(has_value ? record.value().image_path() : "");
 }
 
